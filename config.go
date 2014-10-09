@@ -5,21 +5,14 @@ import (
 	"time"
 )
 
-type parseConfig struct {
+type ParseConfig struct {
 	Url           string
 	ApplicationId string
 	RESTAPIKey    string
 	TimeOut       time.Duration
 }
 
-var config parseConfig
-
-func InitConfig(url string, applicationId string, restApiKey string, timeOut time.Duration) error {
-	config = parseConfig{url, applicationId, restApiKey, timeOut * time.Millisecond}
-	return checkConfig()
-}
-
-func checkConfig() error {
+func checkConfig(config ParseConfig) error {
 	if config.Url == "" {
 		return errors.New("parse url is empty")
 	}
