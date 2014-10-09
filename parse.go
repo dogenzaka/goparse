@@ -24,8 +24,7 @@ type ParseClient struct {
 
 // Create new parse client
 func New(config ParseConfig) (*ParseClient, error) {
-	err := checkConfig(config)
-	if err != nil {
+	if err := checkConfig(config); err != nil {
 		return nil, err
 	}
 

@@ -6,7 +6,7 @@ type (
 	User struct {
 		ObjectId      string    `json:"objectId,omitempty"`
 		Email         string    `json:"email,omitempty"`
-		Username      string    `json:"username,omitempty"`
+		UserName      string    `json:"username,omitempty"`
 		Phone         string    `json:"phone,omitempty"`
 		EmailVerified bool      `json:"emailVerified,omitempty"`
 		SessionToken  string    `json:"sessionToken,omitempty"`
@@ -21,13 +21,13 @@ type (
 	}
 
 	Facebook struct {
-		ID          string    `json:"id,omitempty"`
+		Id          string    `json:"id,omitempty"`
 		AccessToken string    `json:"access_token,omitempty"`
 		Expiration  time.Time `json:"expiration_date,omitempty"`
 	}
 
 	Twitter struct {
-		ID              string `json:"id,omitempty"`
+		Id              string `json:"id,omitempty"`
 		ScreenName      string `json:"screen_name,omitempty"`
 		ConsumerKey     string `json:"consumer_key,omitempty"`
 		ConsumerSecret  string `json:"consumer_secret,omitempty"`
@@ -36,11 +36,6 @@ type (
 	}
 
 	Anonymous struct {
-		ID string `json:"id,omitempty"`
-	}
-
-	ErrorReuslt struct {
-		Code  int
-		Error string
+		Id string `json:"id,omitempty"`
 	}
 )
