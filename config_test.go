@@ -15,6 +15,7 @@ func TestConfig(t *testing.T) {
 				"test",
 				"test",
 				"test",
+				"test",
 				1000,
 			}
 			err := checkConfig(c)
@@ -24,6 +25,7 @@ func TestConfig(t *testing.T) {
 		Convey("If url is blank", func() {
 			c := ParseConfig{
 				"",
+				"test",
 				"test",
 				"test",
 				1000,
@@ -37,16 +39,18 @@ func TestConfig(t *testing.T) {
 				"test",
 				"",
 				"test",
+				"test",
 				1000,
 			}
 			err := checkConfig(c)
 			So(err, ShouldNotBeNil)
 		})
 
-		Convey("If rest api key is blank", func() {
+		Convey("If rest api key and master key are blank", func() {
 			c := ParseConfig{
 				"test",
 				"test",
+				"",
 				"",
 				1000,
 			}
@@ -54,8 +58,33 @@ func TestConfig(t *testing.T) {
 			So(err, ShouldNotBeNil)
 		})
 
+		Convey("If rest api key are blank", func() {
+			c := ParseConfig{
+				"test",
+				"test",
+				"",
+				"test",
+				1000,
+			}
+			err := checkConfig(c)
+			So(err, ShouldBeNil)
+		})
+
+		Convey("If master key are blank", func() {
+			c := ParseConfig{
+				"test",
+				"test",
+				"test",
+				"",
+				1000,
+			}
+			err := checkConfig(c)
+			So(err, ShouldBeNil)
+		})
+
 		Convey("If time out is zero", func() {
 			c := ParseConfig{
+				"test",
 				"test",
 				"test",
 				"test",
@@ -67,6 +96,7 @@ func TestConfig(t *testing.T) {
 
 		Convey("If time out is a negative number", func() {
 			c := ParseConfig{
+				"test",
 				"test",
 				"test",
 				"test",
