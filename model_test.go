@@ -12,9 +12,9 @@ import (
 
 func TestModel(t *testing.T) {
 
-	Convey("Start model testing", t, func() {
+	Convey("Given JSON strings", t, func() {
 
-		Convey("Decode JSON to User", func() {
+		Convey("When decoding as User", func() {
 
 			s := `{
 				"sessionToken":"2qx3lA4So1jDzW1Dgj2Fq3sCC",
@@ -29,34 +29,34 @@ func TestModel(t *testing.T) {
 			err := json.NewDecoder(strings.NewReader(s)).Decode(&u)
 			So(err, ShouldEqual, nil)
 
-			Convey("Exsits SessionToken", func() {
+			Convey("It has a SessionToken", func() {
 				So(u.SessionToken, ShouldEqual, "2qx3lA4So1jDzW1Dgj2Fq3sCC")
 			})
 
-			Convey("Exsits ObjectId", func() {
+			Convey("It has an ObjectId", func() {
 				So(u.ObjectId, ShouldEqual, "5J9g2dDJTF")
 			})
 
-			Convey("Exsits UserName", func() {
+			Convey("It has an UserName", func() {
 				So(u.UserName, ShouldEqual, "test")
 			})
 
-			Convey("Exsits Phone", func() {
+			Convey("It has a Phone", func() {
 				So(u.Phone, ShouldEqual, "090-1234-5678")
 			})
 
-			Convey("Exsits CreatedAt", func() {
+			Convey("CreatedAt equals provided time", func() {
 				t, _ := time.Parse(time.RFC3339, "2014-09-29T08:31:59.030Z")
 				So(u.CreatedAt, ShouldHappenOnOrBefore, t)
 			})
 
-			Convey("Exsits UpdatedAt", func() {
+			Convey("UpdatedAt equals provided time", func() {
 				t, _ := time.Parse(time.RFC3339, "2014-10-29T08:31:59.030Z")
 				So(u.UpdatedAt, ShouldHappenOnOrBefore, t)
 			})
 		})
 
-		Convey("Decode JSON to Facebook", func() {
+		Convey("When decoding as Facebook", func() {
 
 			s := `{
 				"id": "abcdefg",
@@ -68,21 +68,21 @@ func TestModel(t *testing.T) {
 			err := json.NewDecoder(strings.NewReader(s)).Decode(&f)
 			So(err, ShouldEqual, nil)
 
-			Convey("Exsits facebook id", func() {
+			Convey("It has an Id", func() {
 				So(f.Id, ShouldEqual, "abcdefg")
 			})
 
-			Convey("Exsits access_token", func() {
+			Convey("It has an AccessToken", func() {
 				So(f.AccessToken, ShouldEqual, "hijklmn")
 			})
 
-			Convey("Exsits expiration_date", func() {
+			Convey("Expiration is provided date", func() {
 				t, _ := time.Parse(time.RFC3339, "2014-10-29T08:31:59.030Z")
 				So(f.Expiration, ShouldHappenOnOrBefore, t)
 			})
 		})
 
-		Convey("Decode JSON to twitter", func() {
+		Convey("When decoding as Twitter", func() {
 
 			s := `{
 				"id": "abcdefg",
@@ -97,32 +97,32 @@ func TestModel(t *testing.T) {
 			err := json.NewDecoder(strings.NewReader(s)).Decode(&t)
 			So(err, ShouldEqual, nil)
 
-			Convey("Exsits twitter Id", func() {
+			Convey("It has an Id", func() {
 				So(t.Id, ShouldEqual, "abcdefg")
 			})
 
-			Convey("Exsits screen_name", func() {
+			Convey("It has a ScreenName", func() {
 				So(t.ScreenName, ShouldEqual, "hijklmn")
 			})
 
-			Convey("Exsits consumer_key", func() {
+			Convey("It has a ConsumerKey", func() {
 				So(t.ConsumerKey, ShouldEqual, "123abc")
 			})
 
-			Convey("Exsits consumer_secret", func() {
+			Convey("It has a ConsumerSecret", func() {
 				So(t.ConsumerSecret, ShouldEqual, "345def")
 			})
 
-			Convey("Exsits auth_token", func() {
+			Convey("It has an AuthToken", func() {
 				So(t.AuthToken, ShouldEqual, "678ghi")
 			})
 
-			Convey("Exsits UpdatedAt", func() {
+			Convey("It has an AuthTokenSecret", func() {
 				So(t.AuthTokenSecret, ShouldEqual, "901jkl")
 			})
 		})
 
-		Convey("Decode JSON to Facebook", func() {
+		Convey("When decoding as Anonymous", func() {
 
 			s := `{
 					"id": "abcdefg"
@@ -132,9 +132,30 @@ func TestModel(t *testing.T) {
 			err := json.NewDecoder(strings.NewReader(s)).Decode(&a)
 			So(err, ShouldEqual, nil)
 
-			Convey("Exsits facebook id", func() {
+			Convey("It has an Id", func() {
 				So(a.Id, ShouldEqual, "abcdefg")
 			})
+		})
+
+		Convey("When deocding as Error", func() {
+
+			s := `{
+				"code": 105,
+				"error": "invalid field name: bl!ng"
+			}`
+
+			var a Error
+			err := json.NewDecoder(strings.NewReader(s)).Decode(&a)
+			So(err, ShouldEqual, nil)
+
+			Convey("It has a Code", func() {
+				So(a.Code, ShouldEqual, 105)
+			})
+
+			Convey("It has a Message", func() {
+				So(a.Message, ShouldEqual, "invalid field name: bl!ng")
+			})
+
 		})
 
 	})

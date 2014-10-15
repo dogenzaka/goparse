@@ -1,18 +1,15 @@
 language: go
-
 go:
-  - 1.3
-
+- 1.3
 before_install:
-  - sudo pip install codecov
-
+- sudo pip install codecov
 install:
-  - go get code.google.com/p/go.tools/cmd/cover
-  - go get github.com/smartystreets/goconvey
-  - go get ./...
-
+- go get code.google.com/p/go.tools/cmd/cover
+- go get github.com/smartystreets/goconvey
+- go get ./...
 script:
-  - go test -v -coverprofile=coverage.txt -covermode=count
-
+- go test -v -coverprofile=coverage.txt -covermode=count
 after_success:
-  - codecov
+- codecov
+env:
+- TEST_PARSE_APPLICATION_ID=jhEPVJsjS8vylJQWFMDUhdF53XV2WfNYTLnPk5KA TEST_PARSE_REST_API_KEY=ZJea2ZeJF0E862gR6QIEmfqTyrdetltDwyYdLwOP

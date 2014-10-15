@@ -38,4 +38,14 @@ type (
 	Anonymous struct {
 		Id string `json:"id,omitempty"`
 	}
+
+	Signup struct {
+		UserName string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	Error struct {
+		Code    int    `json:"code"`
+		Message string `json:"error"`
+	}
 )
