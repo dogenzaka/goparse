@@ -3,8 +3,9 @@ package goparse
 import "time"
 
 type (
+	// User data type
 	User struct {
-		ObjectId      string    `json:"objectId,omitempty"`
+		ObjectID      string    `json:"objectId,omitempty"`
 		Email         string    `json:"email,omitempty"`
 		UserName      string    `json:"username,omitempty"`
 		Phone         string    `json:"phone,omitempty"`
@@ -14,20 +15,23 @@ type (
 		UpdatedAt     time.Time `json:"updatedAt,omitempty"`
 	}
 
+	// AuthData data type
 	AuthData struct {
-		Facebook  *Facebook  `json:"facebook",omitempty`
+		Facebook  *Facebook  `json:"facebook,omitempty"`
 		Twitter   *Twitter   `json:"twitter,omitempty"`
 		Anonymous *Anonymous `json:"anonymous,omitempty"`
 	}
 
+	// Facebook data type
 	Facebook struct {
-		Id          string    `json:"id,omitempty"`
+		ID          string    `json:"id,omitempty"`
 		AccessToken string    `json:"access_token,omitempty"`
 		Expiration  time.Time `json:"expiration_date,omitempty"`
 	}
 
+	// Twitter data type
 	Twitter struct {
-		Id              string `json:"id,omitempty"`
+		ID              string `json:"id,omitempty"`
 		ScreenName      string `json:"screen_name,omitempty"`
 		ConsumerKey     string `json:"consumer_key,omitempty"`
 		ConsumerSecret  string `json:"consumer_secret,omitempty"`
@@ -35,15 +39,18 @@ type (
 		AuthTokenSecret string `json:"auth_token_secret,omitempty"`
 	}
 
+	// Anonymous data type
 	Anonymous struct {
-		Id string `json:"id,omitempty"`
+		ID string `json:"id,omitempty"`
 	}
 
+	// Signup data type
 	Signup struct {
 		UserName string `json:"username"`
 		Password string `json:"password"`
 	}
 
+	// Error data type
 	Error struct {
 		Code    int    `json:"code"`
 		Message string `json:"error"`

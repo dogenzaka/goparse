@@ -12,14 +12,15 @@ import (
 )
 
 const (
-	headerAppId        = "X-Parse-Application-Id" // Parse Application ID
+	headerAppID        = "X-Parse-Application-Id" // Parse Application ID
 	headerMasterKey    = "X-Parse-Master-Key"     // Parse Master Key
-	headerApiKey       = "X-Parse-REST-API-Key"   // Parse REST API Key
+	headerAPIKey       = "X-Parse-REST-API-Key"   // Parse REST API Key
 	headerSessionToken = "X-Parse-Session-Token"  // Parse Session Token
 
 	pathMe = "/users/me"
 )
 
+// ParseSession is the client which has SessionToken as user authentication.
 type ParseSession struct {
 	client       *ParseClient
 	SessionToken string
@@ -28,8 +29,8 @@ type ParseSession struct {
 // Create a request which is set headers for Parse API
 func (s *ParseSession) initRequest(req *gorequest.SuperAgent) {
 	req.
-		Set(headerAppId, s.client.ApplicationId).
-		Set(headerApiKey, s.client.RESTAPIKey).
+		Set(headerAppID, s.client.ApplicationID).
+		Set(headerAPIKey, s.client.RESTAPIKey).
 		Timeout(s.client.TimeOut)
 
 	if s.SessionToken != "" {
@@ -40,7 +41,7 @@ func (s *ParseSession) initRequest(req *gorequest.SuperAgent) {
 // Create a request which is set mater key
 func (s *ParseSession) initMasterRequest(req *gorequest.SuperAgent) {
 	req.
-		Set(headerAppId, s.client.ApplicationId).
+		Set(headerAppID, s.client.ApplicationID).
 		Set(headerMasterKey, s.client.MasterKey).
 		Timeout(s.client.TimeOut)
 
@@ -50,19 +51,19 @@ func (s *ParseSession) initMasterRequest(req *gorequest.SuperAgent) {
 }
 
 func (s *ParseSession) get(path string) *gorequest.SuperAgent {
-	req := gorequest.New().Get(s.client.Url + path)
+	req := gorequest.New().Get(s.client.URL + path)
 	s.initRequest(req)
 	return req
 }
 
 func (s *ParseSession) post(path string) *gorequest.SuperAgent {
-	req := gorequest.New().Post(s.client.Url + path)
+	req := gorequest.New().Post(s.client.URL + path)
 	s.initRequest(req)
 	return req
 }
 
 func (s *ParseSession) del(path string) *gorequest.SuperAgent {
-	req := gorequest.New().Delete(s.client.Url + path)
+	req := gorequest.New().Delete(s.client.URL + path)
 	s.initRequest(req)
 	return req
 }
@@ -91,13 +92,13 @@ func (s *ParseSession) Login(username string, password string) (user User, err e
 	return user, err
 }
 
-// Get self user information
+// GetMe gets self user information
 func (s *ParseSession) GetMe() (user User, err error) {
 	err = s.GetMeInto(&user)
 	return user, err
 }
 
-// Get self user information into provided object
+// GetMeInto gets self user information into provided object
 func (s *ParseSession) GetMeInto(user interface{}) error {
 	if user == nil {
 		return errors.New("user must not be nil")
@@ -105,9 +106,9 @@ func (s *ParseSession) GetMeInto(user interface{}) error {
 	return do(s.get("/users/me"), user)
 }
 
-// Delete user
-func (s *ParseSession) DeleteUser(userId string) error {
-	return do(s.del("/users/"+userId), nil)
+// DeleteUser deletes user by ID
+func (s *ParseSession) DeleteUser(userID string) error {
+	return do(s.del("/users/"+userID), nil)
 }
 
 // Execute a parse request
@@ -115,7 +116,7 @@ func do(req *gorequest.SuperAgent, data interface{}) error {
 
 	res, body, errs := req.End()
 	if errs != nil {
-		return errors.New(fmt.Sprintf("%v", errs))
+		return fmt.Errorf("%v", errs)
 	}
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		// parse as error model
@@ -123,13 +124,11 @@ func do(req *gorequest.SuperAgent, data interface{}) error {
 		err := json.NewDecoder(strings.NewReader(body)).Decode(reserr)
 		if err != nil {
 			return err
-		} else {
-			return errors.New(reserr.Message + " - code:" + strconv.Itoa(reserr.Code))
 		}
+		return errors.New(reserr.Message + " - code:" + strconv.Itoa(reserr.Code))
 	}
 	if data == nil {
 		return nil
-	} else {
-		return json.NewDecoder(strings.NewReader(body)).Decode(data)
 	}
+	return json.NewDecoder(strings.NewReader(body)).Decode(data)
 }
