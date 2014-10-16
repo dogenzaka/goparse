@@ -54,7 +54,7 @@ func TestParseSession(t *testing.T) {
 
 		client, err := getDefaultClient()
 		So(err, ShouldBeNil)
-		So(client.ApplicationId, ShouldEqual, os.Getenv("TEST_PARSE_APPLICATION_ID"))
+		So(client.ApplicationID, ShouldEqual, os.Getenv("TEST_PARSE_APPLICATION_ID"))
 		So(client.RESTAPIKey, ShouldEqual, os.Getenv("TEST_PARSE_REST_API_KEY"))
 
 		session, err := NewSession("")
@@ -91,7 +91,7 @@ func TestParseSession(t *testing.T) {
 			user, err := session.Login("unknown", "password")
 
 			Convey("It returns an error", func() {
-				So(user.ObjectId, ShouldEqual, "")
+				So(user.ObjectID, ShouldEqual, "")
 				So(err, ShouldNotBeNil)
 				So(err.Error(), ShouldEqual, "invalid login parameters - code:101")
 			})
@@ -104,7 +104,7 @@ func TestParseSession(t *testing.T) {
 
 			Convey("It returns an user with token", func() {
 				So(err, ShouldBeNil)
-				So(user.ObjectId, ShouldNotEqual, "")
+				So(user.ObjectID, ShouldNotEqual, "")
 				So(user.SessionToken, ShouldNotEqual, "")
 				So(user.UserName, ShouldEqual, "testuser")
 			})
@@ -116,7 +116,7 @@ func TestParseSession(t *testing.T) {
 			user, err := session.Login("testuser", "testpass")
 			So(err, ShouldBeNil)
 
-			err = session.DeleteUser(user.ObjectId)
+			err = session.DeleteUser(user.ObjectID)
 
 			Convey("It returns no errors", func() {
 				So(err, ShouldBeNil)

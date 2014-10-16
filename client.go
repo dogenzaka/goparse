@@ -12,17 +12,19 @@ const (
 
 var defaultClient *ParseClient
 
+// ParseConfig is the configuration for initializing ParseClient
 type ParseConfig struct {
-	Url           string
-	ApplicationId string
+	URL           string
+	ApplicationID string
 	RESTAPIKey    string
 	MasterKey     string
 	TimeOut       time.Duration
 }
 
+// ParseClient is the client to access Parse REST API
 type ParseClient struct {
-	Url           string
-	ApplicationId string
+	URL           string
+	ApplicationID string
 	RESTAPIKey    string
 	MasterKey     string
 	TimeOut       time.Duration
@@ -40,7 +42,7 @@ func getDefaultClient() (*ParseClient, error) {
 	return defaultClient, nil
 }
 
-// Create a new parse client with environment variables
+// NewClient is creating ParseClient
 func NewClient() (*ParseClient, error) {
 	url := os.Getenv("PARSE_ENDPOINT_URL")
 	if url == "" {
@@ -48,8 +50,8 @@ func NewClient() (*ParseClient, error) {
 		url = defaultEndPoint
 	}
 
-	appId := os.Getenv("PARSE_APPLICATION_ID")
-	if appId == "" {
+	appID := os.Getenv("PARSE_APPLICATION_ID")
+	if appID == "" {
 		return nil, errors.New("client requires PARSE_APPLICATION_ID")
 	}
 
@@ -59,27 +61,27 @@ func NewClient() (*ParseClient, error) {
 	}
 
 	return &ParseClient{
-		Url:           url,
-		ApplicationId: appId,
+		URL:           url,
+		ApplicationID: appID,
 		RESTAPIKey:    apiKey,
 		MasterKey:     os.Getenv("PARSE_MASTER_KEY"),
 		TimeOut:       time.Second * 5,
 	}, nil
 }
 
-// Create new parse client with a parse configuration
+// NewClientWithConfig creates Parse Client with configuration
 func NewClientWithConfig(config ParseConfig) (*ParseClient, error) {
 
-	if config.Url == "" {
+	if config.URL == "" {
 		// use default endpoint
-		config.Url = defaultEndPoint
+		config.URL = defaultEndPoint
 	}
 
 	if config.TimeOut == 0 {
 		config.TimeOut = time.Millisecond * 5
 	}
 
-	if config.ApplicationId == "" {
+	if config.ApplicationID == "" {
 		return nil, errors.New("client requires ApplicationId")
 	}
 
@@ -88,15 +90,15 @@ func NewClientWithConfig(config ParseConfig) (*ParseClient, error) {
 	}
 
 	return &ParseClient{
-		Url:           config.Url,
-		ApplicationId: config.ApplicationId,
+		URL:           config.URL,
+		ApplicationID: config.ApplicationID,
 		RESTAPIKey:    config.RESTAPIKey,
 		MasterKey:     config.MasterKey,
 		TimeOut:       config.TimeOut,
 	}, nil
 }
 
-// Create a new session from the client
+// NewSession creates a new session from the client
 func (p *ParseClient) NewSession(sessionToken string) *ParseSession {
 	return &ParseSession{
 		client:       p,
@@ -104,12 +106,11 @@ func (p *ParseClient) NewSession(sessionToken string) *ParseSession {
 	}
 }
 
-// Create a new session from default client
+// NewSession create a new session from default client
 func NewSession(sessionToken string) (*ParseSession, error) {
 	client, err := getDefaultClient()
 	if err != nil {
 		return nil, err
-	} else {
-		return client.NewSession(sessionToken), nil
 	}
+	return client.NewSession(sessionToken), nil
 }

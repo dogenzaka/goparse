@@ -46,8 +46,8 @@ func TestParseClient(t *testing.T) {
 			Convey("It should return a valid client", func() {
 				So(client, ShouldNotBeNil)
 				So(err, ShouldBeNil)
-				So(client.ApplicationId, ShouldEqual, "TEST_APP_ID")
-				So(client.Url, ShouldEqual, defaultEndPoint)
+				So(client.ApplicationID, ShouldEqual, "TEST_APP_ID")
+				So(client.URL, ShouldEqual, defaultEndPoint)
 				So(client.RESTAPIKey, ShouldEqual, "TEST_API_KEY")
 				So(client.MasterKey, ShouldEqual, "")
 				So(client.TimeOut.Seconds(), ShouldEqual, 5)
@@ -74,7 +74,7 @@ func TestParseClient(t *testing.T) {
 		Convey("Without REST API KEY", func() {
 
 			client, err := NewClientWithConfig(ParseConfig{
-				ApplicationId: "APPID",
+				ApplicationID: "APPID",
 			})
 
 			Convey("It should return an error", func() {
@@ -88,7 +88,7 @@ func TestParseClient(t *testing.T) {
 		Convey("With valid config", func() {
 
 			client, err := NewClientWithConfig(ParseConfig{
-				ApplicationId: "APPID",
+				ApplicationID: "APPID",
 				RESTAPIKey:    "APIKEY",
 			})
 

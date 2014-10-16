@@ -34,7 +34,7 @@ func TestModel(t *testing.T) {
 			})
 
 			Convey("It has an ObjectId", func() {
-				So(u.ObjectId, ShouldEqual, "5J9g2dDJTF")
+				So(u.ObjectID, ShouldEqual, "5J9g2dDJTF")
 			})
 
 			Convey("It has an UserName", func() {
@@ -69,7 +69,7 @@ func TestModel(t *testing.T) {
 			So(err, ShouldEqual, nil)
 
 			Convey("It has an Id", func() {
-				So(f.Id, ShouldEqual, "abcdefg")
+				So(f.ID, ShouldEqual, "abcdefg")
 			})
 
 			Convey("It has an AccessToken", func() {
@@ -98,7 +98,7 @@ func TestModel(t *testing.T) {
 			So(err, ShouldEqual, nil)
 
 			Convey("It has an Id", func() {
-				So(t.Id, ShouldEqual, "abcdefg")
+				So(t.ID, ShouldEqual, "abcdefg")
 			})
 
 			Convey("It has a ScreenName", func() {
@@ -133,7 +133,7 @@ func TestModel(t *testing.T) {
 			So(err, ShouldEqual, nil)
 
 			Convey("It has an Id", func() {
-				So(a.Id, ShouldEqual, "abcdefg")
+				So(a.ID, ShouldEqual, "abcdefg")
 			})
 		})
 
