@@ -1,14 +1,10 @@
 package goparse
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"os"
 	"testing"
-)
 
-const (
-	testApplicationId = "jhEPVJsjS8vylJQWFMDUhdF53XV2WfNYTLnPk5KA"
-	testRestAPIKey    = "ZJea2ZeJF0E862gR6QIEmfqTyrdetltDwyYdLwOP"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestParseSession(t *testing.T) {
@@ -68,7 +64,7 @@ func TestParseSession(t *testing.T) {
 
 			Convey("It returns an error", func() {
 				So(err, ShouldNotBeNil)
-				So(err.Error(), ShouldEqual, "username missing - code:200")
+				So(err.Error(), ShouldEqual, "missing username - code:200")
 			})
 
 		})
@@ -109,6 +105,70 @@ func TestParseSession(t *testing.T) {
 				So(user.UserName, ShouldEqual, "testuser")
 			})
 
+		})
+
+		Convey("When uploading installation data", func() {
+
+			user, err := session.Login("testuser", "testpass")
+			So(err, ShouldBeNil)
+
+			data := Installation{
+				AppName:        "Push",
+				AppIdentifier:  "com.push.app",
+				AppVersion:     "1.0",
+				DeviceType:     "android",
+				InstallationID: "8a779f48-0141-4dfa-ba5f-ac49c794efd5",
+				ParseVersion:   "1.8.2",
+				TimeZone:       "Asia/Tokyo",
+				User: Pointer{
+					Type:      "Pointer",
+					ClassName: "_User",
+					ObjectID:  user.ObjectID,
+				},
+			}
+			result := Installation{}
+			err = session.UploadInstallation(data, &result)
+
+			Convey("It returns no errors", func() {
+				So(err, ShouldBeNil)
+			})
+
+		})
+
+		Convey("When sending push-notifiaction", func() {
+			user, err := session.Login("testuser", "testpass")
+			So(err, ShouldBeNil)
+
+			installation := Installation{
+				AppName:        "Push",
+				AppIdentifier:  "com.push.app",
+				AppVersion:     "1.0",
+				DeviceType:     "android",
+				InstallationID: "8a779f48-0141-4dfa-ba5f-ac49c794efd5",
+				ParseVersion:   "1.8.2",
+				TimeZone:       "Asia/Tokyo",
+				User: Pointer{
+					Type:      "Pointer",
+					ClassName: "_User",
+					ObjectID:  user.ObjectID,
+				},
+			}
+			result := Installation{}
+			err = session.UploadInstallation(installation, &result)
+			So(err, ShouldBeNil)
+
+			query := map[string]interface{}{
+				"objectId": result.ObjectID,
+			}
+			data := PushNotificationData{
+				Alert: "test push",
+			}
+
+			err = session.PushNotification(query, data)
+
+			Convey("It returns no errors", func() {
+				So(err, ShouldBeNil)
+			})
 		})
 
 		Convey("When deleting a user", func() {

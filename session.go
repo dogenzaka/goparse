@@ -111,6 +111,20 @@ func (s *ParseSession) DeleteUser(userID string) error {
 	return do(s.del("/users/"+userID), nil)
 }
 
+// UploadInstallation stores the subscription data for installations
+func (s *ParseSession) UploadInstallation(data Installation, result interface{}) error {
+	return do(s.post("/installations").Send(data), result)
+}
+
+// PushNotification sends push-notifiaction each device via parse
+func (s *ParseSession) PushNotification(query map[string]interface{}, data PushNotificationData) error {
+	body := PushNotificationQuery{
+		Where: query,
+		Data:  data,
+	}
+	return do(s.post("/push").Send(body), nil)
+}
+
 // Execute a parse request
 func do(req *gorequest.SuperAgent, data interface{}) error {
 
