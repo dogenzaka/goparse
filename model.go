@@ -50,6 +50,50 @@ type (
 		Password string `json:"password"`
 	}
 
+	// Installation data type
+	Installation struct {
+		ObjectID       string    `json:"objectId,omitempty"`
+		GCMSenderID    string    `json:"GCMSenderID,omitempty"`
+		AppIdentifier  string    `json:"appIdentifier,omitempty"`
+		AppName        string    `json:"appName,omitempty"`
+		AppVersion     string    `json:"appVersion,omitempty"`
+		Badge          string    `json:"badge,omitempty"`
+		Channels       []string  `json:"channels,omitempty"`
+		DeviceToken    string    `json:"deviceToken,omitempty"`
+		DeviceType     string    `json:"deviceType,omitempty"`
+		InstallationID string    `json:"installationId,omitempty"`
+		ParseVersion   string    `json:"parseVersion,omitempty"`
+		PushType       string    `json:"pushType,omitempty"`
+		TimeZone       string    `json:"timeZone,omitempty"`
+		User           Pointer   `json:"user,omitempty"`
+		CreatedAt      time.Time `json:"createdAt,omitempty"`
+		UpdatedAt      time.Time `json:"updatedAt,omitempty"`
+	}
+
+	// Pointer data type
+	Pointer struct {
+		Type      string `json:"__type"`
+		ClassName string `json:"className"`
+		ObjectID  string `json:"objectId"`
+	}
+
+	// PushNotificationQuery data type
+	PushNotificationQuery struct {
+		Where map[string]interface{} `json:"where"`
+		Data  PushNotificationData   `json:"data"`
+	}
+
+	// PushNotificationData data type
+	PushNotificationData struct {
+		Alert            string `json:"alert"`
+		Badge            string `json:"badge,omitempty"`
+		Sound            string `json:"sound,omitempty"`
+		ContentAvailable string `json:"content-avaialble,omitempty"`
+		Category         string `json:"category,omitempty"`
+		URI              string `json:"uri,omitempty"`
+		Title            string `json:"title,omitempty"`
+	}
+
 	// Error data type
 	Error struct {
 		Code    int    `json:"code"`
