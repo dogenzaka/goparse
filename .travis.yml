@@ -1,15 +1,26 @@
 language: go
+
 go:
-- 1.3
-before_install:
-- sudo pip install codecov
-install:
-- go get code.google.com/p/go.tools/cmd/cover
-- go get github.com/smartystreets/goconvey
-- go get ./...
-script:
-- go test -v -coverprofile=coverage.txt -covermode=count
-after_success:
-- codecov
+  - 1.4.1
+
 env:
-- TEST_PARSE_APPLICATION_ID=ABn7cwPXMCDU6eAy8wLIMRRwww73OGG7e8fQ3EKu TEST_PARSE_REST_API_KEY=6eRwDWn5qnLEMd1V5xvDBxRq4QlXbBin78TSWpnK
+  global:
+    - TEST_PARSE_APPLICATION_ID=ABn7cwPXMCDU6eAy8wLIMRRwww73OGG7e8fQ3EKu
+    - TEST_PARSE_REST_API_KEY=6eRwDWn5qnLEMd1V5xvDBxRq4QlXbBin78TSWpnK
+    - secure: RUZJ39ewNwMP/XCyygTeByd6boi5jGprA9++6yIuM7Q0bX0tz5uCO95wpq3a7TX0rMgg07TLUUz58w+Twkc0vThLnZnuGRFAaBeE+lzGEUjlHyimWTZHPzXS8M1FXis0wSJidEddoQanVvyMNtKniBgOVloJIbha6V99msynAKc=
+
+before_install:
+  - sudo pip install codecov
+
+install:
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/smartystreets/goconvey
+  - go get ./...
+
+script:
+  - echo $TEST_PARSE_MASTER_KEY
+  - go test -v -coverprofile=coverage.txt -covermode=count
+
+after_success:
+  - codecov
+
