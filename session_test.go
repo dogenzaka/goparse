@@ -103,6 +103,73 @@ func TestParseSession(t *testing.T) {
 				So(user.ObjectID, ShouldNotEqual, "")
 				So(user.SessionToken, ShouldNotEqual, "")
 				So(user.UserName, ShouldEqual, "testuser")
+
+				Convey("When get user with empty values", func() {
+
+					_, err := session.GetUser("")
+
+					Convey("It returns an error", func() {
+						So(err, ShouldNotBeNil)
+					})
+				})
+
+				Convey("When get user with valid values", func() {
+
+					user2, err := session.GetUser(user.ObjectID)
+
+					Convey("It returns no errors", func() {
+						So(err, ShouldBeNil)
+						So(user2.ObjectID, ShouldEqual, user.ObjectID)
+						So(user2.UserName, ShouldEqual, user.UserName)
+						So(user2.SessionToken, ShouldNotBeEmpty)
+					})
+				})
+
+				Convey("When get user with empty sessionToken", func() {
+
+					session.SessionToken = ""
+					user2, err := session.GetUser(user.ObjectID)
+
+					Convey("It returns no errors", func() {
+						So(err, ShouldBeNil)
+						So(user2.ObjectID, ShouldEqual, user.ObjectID)
+						So(user2.UserName, ShouldEqual, user.UserName)
+						So(user2.SessionToken, ShouldBeEmpty)
+					})
+				})
+
+				Convey("Create client in master key", func() {
+
+					os.Setenv("PARSE_MASTER_KEY", os.Getenv("TEST_PARSE_MASTER_KEY"))
+
+					clientInMaster, err := NewClient()
+					So(err, ShouldBeNil)
+					So(clientInMaster.MasterKey, ShouldEqual, os.Getenv("TEST_PARSE_MASTER_KEY"))
+
+					sessionInMaster := clientInMaster.NewSession("")
+
+					Convey("When get user with empty values", func() {
+
+						_, err := sessionInMaster.GetUserByMaster("")
+
+						Convey("It returns an error", func() {
+							So(err, ShouldNotBeNil)
+						})
+					})
+
+					Convey("When get user with empty sessionToken", func() {
+
+						user2, err := sessionInMaster.GetUserByMaster(user.ObjectID)
+
+						Convey("It returns no errors", func() {
+							So(err, ShouldBeNil)
+							So(user2.ObjectID, ShouldEqual, user.ObjectID)
+							So(user2.UserName, ShouldEqual, user.UserName)
+							So(user2.SessionToken, ShouldNotBeEmpty)
+						})
+					})
+				})
+
 			})
 
 		})

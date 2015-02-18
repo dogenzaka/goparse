@@ -7,7 +7,7 @@ env:
   global:
     - TEST_PARSE_APPLICATION_ID=ABn7cwPXMCDU6eAy8wLIMRRwww73OGG7e8fQ3EKu
     - TEST_PARSE_REST_API_KEY=6eRwDWn5qnLEMd1V5xvDBxRq4QlXbBin78TSWpnK
-    - secure: RUZJ39ewNwMP/XCyygTeByd6boi5jGprA9++6yIuM7Q0bX0tz5uCO95wpq3a7TX0rMgg07TLUUz58w+Twkc0vThLnZnuGRFAaBeE+lzGEUjlHyimWTZHPzXS8M1FXis0wSJidEddoQanVvyMNtKniBgOVloJIbha6V99msynAKc=
+    - TEST_PARSE_MASTER_KEY=Ytln0WFknVCcdvPRt3NXaXXUYwaONW4i1OBamrqQ
 
 before_install:
   - sudo pip install codecov
