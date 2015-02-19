@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - 1.4.1
+  - 1.4.2
 
 env:
   global:
@@ -15,10 +15,10 @@ before_install:
 install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/smartystreets/goconvey
+  - go get github.com/smartystreets/assertions
   - go get ./...
 
 script:
-  - echo $TEST_PARSE_MASTER_KEY
   - go test -v -coverprofile=coverage.txt -covermode=count
 
 after_success:
