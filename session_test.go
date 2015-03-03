@@ -57,7 +57,7 @@ func TestParseSession(t *testing.T) {
 
 		Convey("When signing up with empty values", func() {
 
-			err := session.Signup(Signup{
+			_, err := session.Signup(Signup{
 				UserName: "",
 				Password: "",
 			})
@@ -71,13 +71,15 @@ func TestParseSession(t *testing.T) {
 
 		Convey("When signing up with valid values", func() {
 
-			err := session.Signup(Signup{
+			user, err := session.Signup(Signup{
 				UserName: "testuser",
 				Password: "testpass",
 			})
 
 			Convey("It returns no errors", func() {
 				So(err, ShouldBeNil)
+				So(user.SessionToken, ShouldNotBeEmpty)
+				So(user.ObjectID, ShouldNotBeEmpty)
 			})
 
 		})

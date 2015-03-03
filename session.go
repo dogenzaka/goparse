@@ -75,8 +75,8 @@ func (s *ParseSession) del(path string) *gorequest.SuperAgent {
 }
 
 // Signup new user
-func (s *ParseSession) Signup(data Signup) error {
-	return do(s.post("/users").Send(data), nil)
+func (s *ParseSession) Signup(data Signup) (user User, err error) {
+	return user, do(s.post("/users").Send(data), &user)
 }
 
 // Login with data
