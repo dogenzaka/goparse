@@ -229,8 +229,8 @@ func TestParseSession(t *testing.T) {
 			query := map[string]interface{}{
 				"objectId": result.ObjectID,
 			}
-			data := PushNotificationData{
-				Alert: "test push",
+			data := map[string]string{
+				"alert": "test push",
 			}
 
 			err = session.PushNotification(query, data)

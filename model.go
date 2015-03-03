@@ -80,18 +80,7 @@ type (
 	// PushNotificationQuery data type
 	PushNotificationQuery struct {
 		Where map[string]interface{} `json:"where"`
-		Data  PushNotificationData   `json:"data"`
-	}
-
-	// PushNotificationData data type
-	PushNotificationData struct {
-		Alert            string `json:"alert"`
-		Badge            string `json:"badge,omitempty"`
-		Sound            string `json:"sound,omitempty"`
-		ContentAvailable string `json:"content-avaialble,omitempty"`
-		Category         string `json:"category,omitempty"`
-		URI              string `json:"uri,omitempty"`
-		Title            string `json:"title,omitempty"`
+		Data  interface{}            `json:"data"`
 	}
 
 	// Error data type
