@@ -27,56 +27,51 @@ type ParseSession struct {
 }
 
 // Create a request which is set headers for Parse API
-func (s *ParseSession) initRequest(req *gorequest.SuperAgent) {
-	req.
-		Set(headerAppID, s.client.ApplicationID).
-		Set(headerAPIKey, s.client.RESTAPIKey).
-		Timeout(s.client.TimeOut)
+func (s *ParseSession) initRequest(req *gorequest.SuperAgent, useMaster bool) {
+	if useMaster {
+		req.
+			Set(headerAppID, s.client.ApplicationID).
+			Set(headerMasterKey, s.client.MasterKey).
+			Timeout(s.client.TimeOut)
+	} else {
+		req.
+			Set(headerAppID, s.client.ApplicationID).
+			Set(headerAPIKey, s.client.RESTAPIKey).
+			Timeout(s.client.TimeOut)
+	}
 
 	if s.SessionToken != "" {
 		req.Set(headerSessionToken, s.SessionToken)
 	}
 }
 
-// Create a request which is set mater key
-func (s *ParseSession) initMasterRequest(req *gorequest.SuperAgent) {
-	req.
-		Set(headerAppID, s.client.ApplicationID).
-		Set(headerMasterKey, s.client.MasterKey).
-		Timeout(s.client.TimeOut)
-
-	if s.SessionToken != "" {
-		req.Set(headerSessionToken, s.SessionToken)
-	}
-}
-
-func (s *ParseSession) get(path string) *gorequest.SuperAgent {
+func (s *ParseSession) get(path string, useMaster bool) *gorequest.SuperAgent {
 	req := gorequest.New().Get(s.client.URL + path)
-	s.initRequest(req)
+	s.initRequest(req, useMaster)
 	return req
 }
 
-func (s *ParseSession) getByMaster(path string) *gorequest.SuperAgent {
-	req := gorequest.New().Get(s.client.URL + path)
-	s.initMasterRequest(req)
-	return req
-}
-
-func (s *ParseSession) post(path string) *gorequest.SuperAgent {
+func (s *ParseSession) post(path string, useMaster bool) *gorequest.SuperAgent {
 	req := gorequest.New().Post(s.client.URL + path)
-	s.initRequest(req)
+	s.initRequest(req, useMaster)
 	return req
 }
 
-func (s *ParseSession) del(path string) *gorequest.SuperAgent {
+func (s *ParseSession) put(path string, useMaster bool) *gorequest.SuperAgent {
+	req := gorequest.New().Put(s.client.URL + path)
+	s.initRequest(req, useMaster)
+	return req
+}
+
+func (s *ParseSession) del(path string, useMaster bool) *gorequest.SuperAgent {
 	req := gorequest.New().Delete(s.client.URL + path)
-	s.initRequest(req)
+	s.initRequest(req, useMaster)
 	return req
 }
 
 // Signup new user
 func (s *ParseSession) Signup(data Signup) (user User, err error) {
-	return user, do(s.post("/users").Send(data), &user)
+	return user, do(s.post("/users", false).Send(data), &user)
 }
 
 // Login with data
@@ -89,7 +84,7 @@ func (s *ParseSession) Login(username string, password string) (user User, err e
 	}
 
 	// Create a user
-	err = do(s.get("/login").Query(vals.Encode()), &user)
+	err = do(s.get("/login", false).Query(vals.Encode()), &user)
 
 	if user.SessionToken != "" {
 		s.SessionToken = user.SessionToken
@@ -103,7 +98,7 @@ func (s *ParseSession) GetUser(userObjectID string) (user User, err error) {
 	if userObjectID == "" {
 		return user, errors.New("userObjectID must not be empty")
 	}
-	return user, do(s.get("/users/"+userObjectID), &user)
+	return user, do(s.get("/users/"+userObjectID, false), &user)
 }
 
 // GetUserByMaster gets user information
@@ -111,7 +106,7 @@ func (s *ParseSession) GetUserByMaster(userObjectID string) (user User, err erro
 	if userObjectID == "" {
 		return user, errors.New("userObjectID must not be empty")
 	}
-	return user, do(s.getByMaster("/users/"+userObjectID), &user)
+	return user, do(s.get("/users/"+userObjectID, true), &user)
 }
 
 // GetMe gets self user information
@@ -125,17 +120,17 @@ func (s *ParseSession) GetMeInto(user interface{}) error {
 	if user == nil {
 		return errors.New("user must not be nil")
 	}
-	return do(s.get("/users/me"), user)
+	return do(s.get("/users/me", false), user)
 }
 
 // DeleteUser deletes user by ID
 func (s *ParseSession) DeleteUser(userID string) error {
-	return do(s.del("/users/"+userID), nil)
+	return do(s.del("/users/"+userID, false), nil)
 }
 
 // UploadInstallation stores the subscription data for installations
 func (s *ParseSession) UploadInstallation(data Installation, result interface{}) error {
-	return do(s.post("/installations").Send(data), result)
+	return do(s.post("/installations", false).Send(data), result)
 }
 
 // PushNotification sends push-notifiaction each device via parse
@@ -144,7 +139,7 @@ func (s *ParseSession) PushNotification(query map[string]interface{}, data inter
 		Where: query,
 		Data:  data,
 	}
-	return do(s.post("/push").Send(body), nil)
+	return do(s.post("/push", false).Send(body), nil)
 }
 
 // Execute a parse request
@@ -167,4 +162,14 @@ func do(req *gorequest.SuperAgent, data interface{}) error {
 		return nil
 	}
 	return json.NewDecoder(strings.NewReader(body)).Decode(data)
+}
+
+// NewClass creates a new class from the session
+func (s *ParseSession) NewClass(className string) *ParseClass {
+	return &ParseClass{
+		Session:   s,
+		Name:      className,
+		ClassURL:  "/classes/" + className,
+		UseMaster: false,
+	}
 }

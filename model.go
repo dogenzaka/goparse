@@ -83,6 +83,13 @@ type (
 		Data  interface{}            `json:"data"`
 	}
 
+	// ObjectResponse data type
+	ObjectResponse struct {
+		ObjectID  string    `json:"objectId,omitempty"`
+		CreatedAt time.Time `json:"createdAt,omitempty"`
+		UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	}
+
 	// Error data type
 	Error struct {
 		Code    int    `json:"code"`

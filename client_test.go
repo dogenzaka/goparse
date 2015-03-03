@@ -13,6 +13,8 @@ func TestParseClient(t *testing.T) {
 
 		Convey("Without no environment variables", func() {
 
+			os.Setenv("PARSE_APPLICATION_ID", "")
+
 			client, err := NewClient()
 
 			Convey("It should return an error", func() {
@@ -26,6 +28,7 @@ func TestParseClient(t *testing.T) {
 		Convey("After setting PARSE_APPLICATION_ID", func() {
 
 			os.Setenv("PARSE_APPLICATION_ID", "TEST_APP_ID")
+			os.Setenv("PARSE_REST_API_KEY", "")
 
 			client, err := NewClient()
 
