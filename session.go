@@ -56,6 +56,12 @@ func (s *ParseSession) get(path string) *gorequest.SuperAgent {
 	return req
 }
 
+func (s *ParseSession) getByMaster(path string) *gorequest.SuperAgent {
+	req := gorequest.New().Get(s.client.URL + path)
+	s.initMasterRequest(req)
+	return req
+}
+
 func (s *ParseSession) post(path string) *gorequest.SuperAgent {
 	req := gorequest.New().Post(s.client.URL + path)
 	s.initRequest(req)
@@ -90,6 +96,22 @@ func (s *ParseSession) Login(username string, password string) (user User, err e
 	}
 
 	return user, err
+}
+
+// GetUser gets user information
+func (s *ParseSession) GetUser(userObjectID string) (user User, err error) {
+	if userObjectID == "" {
+		return user, errors.New("userObjectID must not be empty")
+	}
+	return user, do(s.get("/users/"+userObjectID), &user)
+}
+
+// GetUserByMaster gets user information
+func (s *ParseSession) GetUserByMaster(userObjectID string) (user User, err error) {
+	if userObjectID == "" {
+		return user, errors.New("userObjectID must not be empty")
+	}
+	return user, do(s.getByMaster("/users/"+userObjectID), &user)
 }
 
 // GetMe gets self user information
