@@ -172,6 +172,20 @@ func TestParseSession(t *testing.T) {
 					})
 				})
 
+				Convey("Parse class operation", func() {
+
+					type Testdata struct {
+						Code int64  `json:"code,omitempty"`
+						Name string `json:"name,omitempty"`
+						*ObjectResponse
+					}
+					testingClass := session.NewClass("Testdata")
+
+					Convey("It returns no errors", func() {
+						So(testingClass, ShouldNotBeNil)
+					})
+				})
+
 			})
 
 		})
