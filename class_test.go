@@ -68,6 +68,16 @@ func TestParseClass(t *testing.T) {
 								So(result2.UpdatedAt, ShouldNotBeEmpty)
 							})
 						})
+
+						Convey("It is not found", func() {
+							var result2 Testdata
+							err := testingClass.Select("hoge", &result2)
+
+							Convey("Checking", func() {
+								So(err, ShouldNotBeNil)
+								So(IsObjectNotFound(err), ShouldBeTrue)
+							})
+						})
 					})
 				})
 

@@ -1,6 +1,9 @@
 package goparse
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 type (
 	// User data type
@@ -96,3 +99,8 @@ type (
 		Message string `json:"error"`
 	}
 )
+
+// Error to string
+func (err *Error) Error() string {
+	return err.Message + " - code:" + strconv.Itoa(err.Code)
+}
