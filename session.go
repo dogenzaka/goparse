@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/parnurzeal/gorequest"
@@ -25,6 +24,19 @@ type ParseSession struct {
 	client       *ParseClient
 	SessionToken string
 }
+
+const (
+	// Error code referrense at parse.com
+	// http://www.parse.com/docs/dotnet/api/html/T_Parse_ParseException_ErrorCode.htm
+
+	// errCodeObjectNotFound is object not found
+	errCodeObjectNotFound = 101
+)
+
+var (
+	// ErrObjectNotFound Error code indicating the specified object doesn't exist.
+	ErrObjectNotFound = errors.New("object not found")
+)
 
 // Create a request which is set headers for Parse API
 func (s *ParseSession) initRequest(req *gorequest.SuperAgent, useMaster bool) {
@@ -156,7 +168,7 @@ func do(req *gorequest.SuperAgent, data interface{}) error {
 		if err != nil {
 			return err
 		}
-		return errors.New(reserr.Message + " - code:" + strconv.Itoa(reserr.Code))
+		return reserr
 	}
 	if data == nil {
 		return nil
@@ -172,4 +184,10 @@ func (s *ParseSession) NewClass(className string) *ParseClass {
 		ClassURL:  "/classes/" + className,
 		UseMaster: false,
 	}
+}
+
+// IsNotFound this error is not found
+func IsObjectNotFound(err error) bool {
+	v, ok := err.(*Error)
+	return ok && v.Code == errCodeObjectNotFound
 }

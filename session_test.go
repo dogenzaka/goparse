@@ -91,7 +91,7 @@ func TestParseSession(t *testing.T) {
 			Convey("It returns an error", func() {
 				So(user.ObjectID, ShouldEqual, "")
 				So(err, ShouldNotBeNil)
-				So(err.Error(), ShouldEqual, "invalid login parameters - code:101")
+				So(IsObjectNotFound(err), ShouldBeTrue)
 			})
 
 		})
