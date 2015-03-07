@@ -14,6 +14,7 @@ type (
 		Phone         string    `json:"phone,omitempty"`
 		EmailVerified bool      `json:"emailVerified,omitempty"`
 		SessionToken  string    `json:"sessionToken,omitempty"`
+		AuthData      *AuthData `json:"authData,omitempty"`
 		CreatedAt     time.Time `json:"createdAt,omitempty"`
 		UpdatedAt     time.Time `json:"updatedAt,omitempty"`
 	}
@@ -49,8 +50,9 @@ type (
 
 	// Signup data type
 	Signup struct {
-		UserName string `json:"username"`
-		Password string `json:"password"`
+		UserName string    `json:"username"`
+		Password string    `json:"password"`
+		AuthData *AuthData `json:"authData,omitempty"`
 	}
 
 	// Installation data type

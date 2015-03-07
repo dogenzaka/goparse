@@ -55,6 +55,8 @@ func TestParseSession(t *testing.T) {
 
 		session, err := NewSession("")
 
+		uuid := "90f37332-48ab-d5ec-1267-cbdb7bd4a480"
+
 		Convey("When signing up with empty values", func() {
 
 			_, err := session.Signup(Signup{
@@ -74,6 +76,11 @@ func TestParseSession(t *testing.T) {
 			user, err := session.Signup(Signup{
 				UserName: "testuser",
 				Password: "testpass",
+				AuthData: &AuthData{
+					Anonymous: &Anonymous{
+						ID: uuid,
+					},
+				},
 			})
 
 			Convey("It returns no errors", func() {
@@ -124,6 +131,9 @@ func TestParseSession(t *testing.T) {
 						So(user2.ObjectID, ShouldEqual, user.ObjectID)
 						So(user2.UserName, ShouldEqual, user.UserName)
 						So(user2.SessionToken, ShouldNotBeEmpty)
+						So(user2.AuthData, ShouldNotBeNil)
+						So(user2.AuthData.Anonymous, ShouldNotBeNil)
+						So(user2.AuthData.Anonymous.ID, ShouldEqual, uuid)
 					})
 				})
 
