@@ -1,7 +1,9 @@
 package goparse
 
 import (
+	"encoding/json"
 	"errors"
+	"net/url"
 )
 
 // ParseClass is an object that contains the ParseSession
@@ -18,6 +20,19 @@ func (c *ParseClass) Select(objectID string, result interface{}) error {
 	if objectID != "" {
 		path = c.ClassURL + "/" + objectID
 	}
+	return do(c.Session.get(path, c.UseMaster), &result)
+}
+
+// Select gets class data information by custom query
+func (c *ParseClass) SelectQuery(query map[string]interface{}, result interface{}) error {
+	b, err := json.Marshal(query)
+	if err != nil {
+		return err
+	}
+	where := url.Values{
+		"where": []string{string(b)},
+	}
+	path := c.ClassURL + "?" + where.Encode()
 	return do(c.Session.get(path, c.UseMaster), &result)
 }
 

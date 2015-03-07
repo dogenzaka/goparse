@@ -186,7 +186,7 @@ func (s *ParseSession) NewClass(className string) *ParseClass {
 	}
 }
 
-// IsNotFound this error is not found
+// IsObjectNotFound check the error "not found" or not
 func IsObjectNotFound(err error) bool {
 	v, ok := err.(*Error)
 	return ok && v.Code == errCodeObjectNotFound
