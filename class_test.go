@@ -1,8 +1,10 @@
 package goparse
 
 import (
+	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -32,6 +34,7 @@ func TestParseClass(t *testing.T) {
 				type Testdata struct {
 					Code int64  `json:"code,omitempty"`
 					Name string `json:"name,omitempty"`
+					Key  string `json:"key,omitempty"`
 					*ObjectResponse
 				}
 				testingClass := session.NewClass("Testdata")
@@ -44,6 +47,7 @@ func TestParseClass(t *testing.T) {
 					data := Testdata{
 						Code: 201,
 						Name: "apple",
+						Key:  fmt.Sprint(time.Now().UnixNano()),
 					}
 					var result Testdata
 					err := testingClass.Create(data, &result)
@@ -54,7 +58,7 @@ func TestParseClass(t *testing.T) {
 						So(result.ObjectID, ShouldNotBeEmpty)
 						So(result.CreatedAt, ShouldNotBeEmpty)
 
-						Convey("Select object", func() {
+						Convey("Select object by ID", func() {
 							var result2 Testdata
 							err := testingClass.Select(result.ObjectID, &result2)
 
@@ -66,6 +70,28 @@ func TestParseClass(t *testing.T) {
 								So(result2.Name, ShouldEqual, data.Name)
 								So(result2.CreatedAt, ShouldNotBeEmpty)
 								So(result2.UpdatedAt, ShouldNotBeEmpty)
+							})
+						})
+
+						Convey("Select object by query", func() {
+							type resultList struct {
+								Results []*Testdata `json:"results"`
+							}
+							var result2 resultList
+							params := map[string]interface{}{
+								"key": data.Key,
+							}
+							err := testingClass.SelectQuery(params, &result2)
+
+							Convey("Checking", func() {
+								So(err, ShouldBeNil)
+								So(result2, ShouldNotBeNil)
+								So(len(result2.Results), ShouldEqual, 1)
+								So(result2.Results[0].ObjectID, ShouldEqual, result.ObjectID)
+								So(result2.Results[0].Code, ShouldEqual, data.Code)
+								So(result2.Results[0].Name, ShouldEqual, data.Name)
+								So(result2.Results[0].CreatedAt, ShouldNotBeEmpty)
+								So(result2.Results[0].UpdatedAt, ShouldNotBeEmpty)
 							})
 						})
 
