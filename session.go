@@ -82,7 +82,7 @@ func (s *ParseSession) del(path string, useMaster bool) *gorequest.SuperAgent {
 }
 
 // Signup new user
-func (s *ParseSession) Signup(data Signup) (user User, err error) {
+func (s *ParseSession) Signup(data interface{}) (user User, err error) {
 	return user, do(s.post("/users", false).Send(data), &user)
 }
 
