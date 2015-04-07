@@ -107,18 +107,33 @@ func (s *ParseSession) Login(username string, password string) (user User, err e
 
 // GetUser gets user information
 func (s *ParseSession) GetUser(userObjectID string) (user User, err error) {
-	if userObjectID == "" {
-		return user, errors.New("userObjectID must not be empty")
-	}
-	return user, do(s.get("/users/"+userObjectID, false), &user)
+	return user, s.getUser(userObjectID, &user, false)
 }
 
-// GetUserByMaster gets user information
+// GetUserByMaster gets user information by use master key
 func (s *ParseSession) GetUserByMaster(userObjectID string) (user User, err error) {
+	return user, s.getUser(userObjectID, &user, true)
+}
+
+// GetUserInto gets user information into provided object
+func (s *ParseSession) GetUserInto(userObjectID string, user interface{}) (err error) {
+	return s.getUser(userObjectID, user, false)
+}
+
+// GetUserIntoByMaster gets user information into provided object by use master key
+func (s *ParseSession) GetUserIntoByMaster(userObjectID string, user interface{}) (err error) {
+	return s.getUser(userObjectID, user, true)
+}
+
+// GetUserByMaster gets user information by private
+func (s *ParseSession) getUser(userObjectID string, user interface{}, useMaster bool) (err error) {
 	if userObjectID == "" {
-		return user, errors.New("userObjectID must not be empty")
+		return errors.New("userObjectID must not be empty")
 	}
-	return user, do(s.get("/users/"+userObjectID, true), &user)
+	if useMaster && s.client.MasterKey == "" {
+		return errors.New("request is requires PARSE_REST_API_KEY")
+	}
+	return do(s.get("/users/"+userObjectID, useMaster), &user)
 }
 
 // UpdateUser update user information
