@@ -180,6 +180,36 @@ func TestParseSession(t *testing.T) {
 							So(user2.SessionToken, ShouldNotBeEmpty)
 						})
 					})
+
+					Convey("When uploading user data by use masterKey", func() {
+						data := map[string]string{
+							"phone": "03-1200-3400",
+						}
+						resp, err := sessionInMaster.UpdateUserByMaster(user.ObjectID, data)
+
+						Convey("It returns no errors", func() {
+							So(err, ShouldBeNil)
+							So(resp, ShouldNotBeNil)
+							So(resp.UpdatedAt.Unix(), ShouldBeGreaterThan, 0)
+						})
+
+						Convey("Check the user data", func() {
+							me, err := session.GetUser(user.ObjectID)
+							So(err, ShouldBeNil)
+							So(me, ShouldNotBeNil)
+							So(me.ObjectID, ShouldEqual, user.ObjectID)
+							So(me.Phone, ShouldEqual, user.Phone)
+						})
+
+						Convey("masterKey is empty", func() {
+							data := map[string]string{
+								"phone": "03-1200-3400",
+							}
+							sessionInMaster.client.MasterKey = ""
+							_, err := sessionInMaster.UpdateUserByMaster(user.ObjectID, data)
+							So(err, ShouldNotBeNil)
+						})
+					})
 				})
 
 				Convey("Parse class operation", func() {
@@ -198,6 +228,26 @@ func TestParseSession(t *testing.T) {
 
 			})
 
+			Convey("When uploading user data", func() {
+				data := map[string]string{
+					"phone": "03-1200-2300",
+				}
+				resp, err := session.UpdateUser(user.ObjectID, data)
+
+				Convey("It returns no errors", func() {
+					So(err, ShouldBeNil)
+					So(resp, ShouldNotBeNil)
+					So(resp.UpdatedAt.Unix(), ShouldBeGreaterThan, 0)
+				})
+
+				Convey("Check the user data", func() {
+					me, err := session.GetMe()
+					So(err, ShouldBeNil)
+					So(me, ShouldNotBeNil)
+					So(me.ObjectID, ShouldEqual, user.ObjectID)
+					So(me.Phone, ShouldEqual, user.Phone)
+				})
+			})
 		})
 
 		Convey("When uploading installation data", func() {
