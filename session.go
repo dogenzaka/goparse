@@ -121,6 +121,28 @@ func (s *ParseSession) GetUserByMaster(userObjectID string) (user User, err erro
 	return user, do(s.get("/users/"+userObjectID, true), &user)
 }
 
+// UpdateUser update user information
+func (s *ParseSession) UpdateUser(userObjectID string, data interface{}) (*ObjectResponse, error) {
+	return s.updateUser(userObjectID, data, false)
+}
+
+// UpdateUserByMaster update user information by use master key
+func (s *ParseSession) UpdateUserByMaster(userObjectID string, data interface{}) (*ObjectResponse, error) {
+	return s.updateUser(userObjectID, data, true)
+}
+
+// UpdateUser update user information by private
+func (s *ParseSession) updateUser(userObjectID string, data interface{}, useMaster bool) (*ObjectResponse, error) {
+	if userObjectID == "" {
+		return nil, errors.New("userObjectID must not be empty")
+	}
+	if useMaster && s.client.MasterKey == "" {
+		return nil, errors.New("request is requires PARSE_REST_API_KEY")
+	}
+	var resp ObjectResponse
+	return &resp, do(s.put("/users/"+userObjectID, useMaster).Send(data), &resp)
+}
+
 // GetMe gets self user information
 func (s *ParseSession) GetMe() (user User, err error) {
 	err = s.GetMeInto(&user)
