@@ -150,6 +150,22 @@ func TestParseSession(t *testing.T) {
 					})
 				})
 
+				Convey("When get user into provided object with valid values", func() {
+
+					var user2 User
+					err := session.GetUserInto(user.ObjectID, &user2)
+
+					Convey("It returns no errors", func() {
+						So(err, ShouldBeNil)
+						So(user2.ObjectID, ShouldEqual, user.ObjectID)
+						So(user2.UserName, ShouldEqual, user.UserName)
+						So(user2.SessionToken, ShouldNotBeEmpty)
+						So(user2.AuthData, ShouldNotBeNil)
+						So(user2.AuthData.Anonymous, ShouldNotBeNil)
+						So(user2.AuthData.Anonymous.ID, ShouldEqual, uuid)
+					})
+				})
+
 				Convey("Create client in master key", func() {
 
 					os.Setenv("PARSE_MASTER_KEY", os.Getenv("TEST_PARSE_MASTER_KEY"))
@@ -208,6 +224,29 @@ func TestParseSession(t *testing.T) {
 							sessionInMaster.client.MasterKey = ""
 							_, err := sessionInMaster.UpdateUserByMaster(user.ObjectID, data)
 							So(err, ShouldNotBeNil)
+						})
+					})
+
+					Convey("When get user with empty masterKey", func() {
+
+						sessionInMaster.client.MasterKey = ""
+						_, err := sessionInMaster.GetUserByMaster(user.ObjectID)
+
+						Convey("It returns error", func() {
+							So(err, ShouldNotBeNil)
+						})
+					})
+
+					Convey("When get user into provided object with empty sessionToken", func() {
+
+						var user2 User
+						err := sessionInMaster.GetUserIntoByMaster(user.ObjectID, &user2)
+
+						Convey("It returns no errors", func() {
+							So(err, ShouldBeNil)
+							So(user2.ObjectID, ShouldEqual, user.ObjectID)
+							So(user2.UserName, ShouldEqual, user.UserName)
+							So(user2.SessionToken, ShouldNotBeEmpty)
 						})
 					})
 				})
