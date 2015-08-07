@@ -183,11 +183,7 @@ func (s *ParseSession) UploadInstallation(data Installation, result interface{})
 }
 
 // PushNotification sends push-notifiaction each device via parse
-func (s *ParseSession) PushNotification(query map[string]interface{}, data interface{}) error {
-	body := PushNotificationQuery{
-		Where: query,
-		Data:  data,
-	}
+func (s *ParseSession) PushNotification(body PushNotificationQuery) error {
 	return do(s.post("/push", false).Send(body), nil)
 }
 

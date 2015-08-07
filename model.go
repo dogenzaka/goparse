@@ -82,10 +82,15 @@ type (
 		ObjectID  string `json:"objectId"`
 	}
 
-	// PushNotificationQuery data type
+	// PushNotificationQuery data type.
+	// You can set the push_time and expiration_time to either "2015-08-022T12:00:00.000Z"
+	// or 1440226800.
 	PushNotificationQuery struct {
-		Where map[string]interface{} `json:"where"`
-		Data  interface{}            `json:"data"`
+		Where              map[string]interface{} `json:"where"`
+		PushTime           interface{}            `json:"push_time,omitempty"`
+		ExpirationTime     interface{}            `json:"expiration_time,omitempty"`
+		ExpirationInterval int64                  `json:"expiration_interval,omitempty"`
+		Data               interface{}            `json:"data"`
 	}
 
 	// ObjectResponse data type

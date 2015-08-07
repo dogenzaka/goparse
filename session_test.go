@@ -339,14 +339,16 @@ func TestParseSession(t *testing.T) {
 			err = session.UploadInstallation(installation, &result)
 			So(err, ShouldBeNil)
 
-			query := map[string]interface{}{
-				"objectId": result.ObjectID,
-			}
-			data := map[string]string{
-				"alert": "test push",
+			body := PushNotificationQuery{
+				Where: map[string]interface{}{
+					"objectId": result.ObjectID,
+				},
+				Data: map[string]string{
+					"alert": "test push",
+				},
 			}
 
-			err = session.PushNotification(query, data)
+			err = session.PushNotification(body)
 
 			Convey("It returns no errors", func() {
 				So(err, ShouldBeNil)
