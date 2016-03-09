@@ -183,13 +183,8 @@ func (s *ParseSession) UploadInstallation(data Installation, result interface{})
 }
 
 // PushNotification sends push-notifiaction each device via parse
-func (s *ParseSession) PushNotification(body PushNotificationQuery) error {
-	return do(s.post("/push", false).Send(body), nil)
-}
-
-// MasterPushNotification sends push-notifiaction as master (master key) each device via parse
-func (s *ParseSession) MasterPushNotification(body PushNotificationQuery) error {
-	return do(s.post("/push", true).Send(body), nil)
+func (s *ParseSession) PushNotification(body PushNotificationQuery, useMaster bool) error {
+	return do(s.post("/push", useMaster).Send(body), nil)
 }
 
 // Execute a parse request
