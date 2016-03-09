@@ -260,7 +260,7 @@ func TestParseSession(t *testing.T) {
 								"alert": "master push",
 							},
 						}
-						err := sessionInMaster.PushNotificationAsMaster(body)
+						err := sessionInMaster.PushNotificationByMaster(body)
 
 						So(err, ShouldBeNil)
 
