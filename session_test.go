@@ -254,7 +254,7 @@ func TestParseSession(t *testing.T) {
 
 						body := PushNotificationQuery{
 							Where: map[string]interface{}{
-								"objectId": result.ObjectID,
+								"DeviceType": "android",
 							},
 							Data: map[string]string{
 								"alert": "master push",
@@ -337,7 +337,7 @@ func TestParseSession(t *testing.T) {
 
 		})
 
-		Convey("When sending push-notifiaction", func() {
+		Convey("When sending push-notification", func() {
 			user, err := session.Login("testuser", "testpass")
 			So(err, ShouldBeNil)
 
