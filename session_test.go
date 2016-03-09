@@ -262,11 +262,10 @@ func TestParseSession(t *testing.T) {
 						}
 						err := sessionInMaster.PushNotificationByMaster(body)
 
-						So(err, ShouldBeNil)
-
 						Convey("It returns no errors", func() {
 							So(err, ShouldBeNil)
 						})
+
 					})
 
 				})
