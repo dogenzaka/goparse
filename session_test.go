@@ -249,6 +249,26 @@ func TestParseSession(t *testing.T) {
 							So(user2.SessionToken, ShouldNotBeEmpty)
 						})
 					})
+
+					Convey("When sending user push as master", func() {
+
+						body := PushNotificationQuery{
+							Where: map[string]interface{}{
+								"objectId": result.ObjectID,
+							},
+							Data: map[string]string{
+								"alert": "master push",
+							},
+						}
+						err := sessionInMaster.PushNotificationAsMaster(body)
+
+						So(err, ShouldBeNil)
+
+						Convey("It returns no errors", func() {
+							So(err, ShouldBeNil)
+						})
+					})
+
 				})
 
 				Convey("Parse class operation", func() {
