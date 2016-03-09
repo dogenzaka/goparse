@@ -187,6 +187,11 @@ func (s *ParseSession) PushNotification(body PushNotificationQuery) error {
 	return do(s.post("/push", false).Send(body), nil)
 }
 
+// MasterPushNotification sends push-notifiaction as master (master key) each device via parse
+func (s *ParseSession) MasterPushNotification(body PushNotificationQuery) error {
+	return do(s.post("/push", true).Send(body), nil)
+}
+
 // Execute a parse request
 func do(req *gorequest.SuperAgent, data interface{}) error {
 
