@@ -249,6 +249,25 @@ func TestParseSession(t *testing.T) {
 							So(user2.SessionToken, ShouldNotBeEmpty)
 						})
 					})
+
+					Convey("When sending user push as master", func() {
+
+						body := PushNotificationQuery{
+							Where: map[string]interface{}{
+								"DeviceType": "android",
+							},
+							Data: map[string]string{
+								"alert": "master push",
+							},
+						}
+						err := sessionInMaster.PushNotificationByMaster(body)
+
+						Convey("It returns no errors", func() {
+							So(err, ShouldBeNil)
+						})
+
+					})
+
 				})
 
 				Convey("Parse class operation", func() {
@@ -317,7 +336,7 @@ func TestParseSession(t *testing.T) {
 
 		})
 
-		Convey("When sending push-notifiaction", func() {
+		Convey("When sending push-notification", func() {
 			user, err := session.Login("testuser", "testpass")
 			So(err, ShouldBeNil)
 
