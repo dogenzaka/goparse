@@ -1,6 +1,7 @@
 package goparse
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -201,7 +202,8 @@ func TestParseSession(t *testing.T) {
 						data := map[string]string{
 							"phone": "03-1200-3400",
 						}
-						resp, err := sessionInMaster.UpdateUserByMaster(user.ObjectID, data)
+						buf, _ := json.Marshal(data)
+						resp, err := sessionInMaster.UpdateUserByMaster(user.ObjectID, string(buf))
 
 						Convey("It returns no errors", func() {
 							So(err, ShouldBeNil)
@@ -290,7 +292,8 @@ func TestParseSession(t *testing.T) {
 				data := map[string]string{
 					"phone": "03-1200-2300",
 				}
-				resp, err := session.UpdateUser(user.ObjectID, data)
+				buf, _ := json.Marshal(data)
+				resp, err := session.UpdateUser(user.ObjectID, string(buf))
 
 				Convey("It returns no errors", func() {
 					So(err, ShouldBeNil)
