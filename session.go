@@ -11,10 +11,11 @@ import (
 )
 
 const (
-	headerAppID        = "X-Parse-Application-Id" // Parse Application ID
-	headerMasterKey    = "X-Parse-Master-Key"     // Parse Master Key
-	headerAPIKey       = "X-Parse-REST-API-Key"   // Parse REST API Key
-	headerSessionToken = "X-Parse-Session-Token"  // Parse Session Token
+	headerAppID            = "X-Parse-Application-Id"    // Parse Application ID
+	headerMasterKey        = "X-Parse-Master-Key"        // Parse Master Key
+	headerAPIKey           = "X-Parse-REST-API-Key"      // Parse REST API Key
+	headerSessionToken     = "X-Parse-Session-Token"     // Parse Session Token
+	headerRevocableSession = "X-Parse-Revocable-Session" // Parse Session Token
 
 	pathMe = "/users/me"
 )
@@ -50,6 +51,10 @@ func (s *ParseSession) initRequest(req *gorequest.SuperAgent, useMaster bool) {
 			Set(headerAppID, s.client.ApplicationID).
 			Set(headerAPIKey, s.client.RESTAPIKey).
 			Timeout(s.client.TimeOut)
+	}
+
+	if s.client.RevocableSession {
+		req.Set(headerRevocableSession, "1")
 	}
 
 	if s.SessionToken != "" {
@@ -103,6 +108,11 @@ func (s *ParseSession) Login(username string, password string) (user User, err e
 	}
 
 	return user, err
+}
+
+// Logout deletes session from parse
+func (s *ParseSession) Logout() (err error) {
+	return do(s.post("/logout", false), nil)
 }
 
 // GetUser gets user information

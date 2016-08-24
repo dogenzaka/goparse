@@ -42,7 +42,7 @@ To create a configured` client,
 ```go
 parseClient := goparse.NewClient(goparse.Config({
   ApplicationId: "PARSE_APPLICATION_ID",
-  RestAPIKey: "PARSE_REST_API_KEY",
+  RestAPIKey: "PARSE_REST_API_KEY", // this is an optional parameter, but we recommand you to set it
   MasterKey: "PARSE_MASTER_KEY",
   EndPointURL: "PARSE_ENDPOINT_URL"
 })
@@ -58,7 +58,7 @@ Environment variables
 The default client uses environment variables to access Parse REST API.
 
 - `PARSE_APPLICATION_ID`
-- `PARSE_REST_API_KEY`
+- `PARSE_REST_API_KEY` (this is an optional parameter, but we recommand you to set it)
 - `PARSE_MASTER_KEY`
 - `PARSE_ENDPOINT_URL`
 

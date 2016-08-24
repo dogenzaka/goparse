@@ -2,32 +2,38 @@ package goparse
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"time"
 )
 
 const (
-	defaultEndPoint = "https://api.parse.com/1"
+	defaultEndPoint   = "https://api.parse.com/1"
+	warningRestAPIKey = `It seems that the the restAPIKey is not set in the parse server if your intentionally not to set this parameter.
+This will lead a data leakage if someone knows the application ID.
+We strongly recommend you to set (or ask the server master to set) client keys in the parse server`
 )
 
 var defaultClient *ParseClient
 
 // ParseConfig is the configuration for initializing ParseClient
 type ParseConfig struct {
-	URL           string
-	ApplicationID string
-	RESTAPIKey    string
-	MasterKey     string
-	TimeOut       time.Duration
+	URL              string
+	ApplicationID    string
+	RESTAPIKey       string
+	MasterKey        string
+	RevocableSession bool
+	TimeOut          time.Duration
 }
 
 // ParseClient is the client to access Parse REST API
 type ParseClient struct {
-	URL           string
-	ApplicationID string
-	RESTAPIKey    string
-	MasterKey     string
-	TimeOut       time.Duration
+	URL              string
+	ApplicationID    string
+	RESTAPIKey       string
+	MasterKey        string
+	RevocableSession bool
+	TimeOut          time.Duration
 }
 
 // Get an default client.
@@ -56,8 +62,10 @@ func NewClient() (*ParseClient, error) {
 	}
 
 	apiKey := os.Getenv("PARSE_REST_API_KEY")
-	if apiKey == "" {
+	if apiKey == "" && url == defaultEndPoint {
 		return nil, errors.New("client requires PARSE_REST_API_KEY")
+	} else if apiKey == "" {
+		fmt.Fprintf(os.Stderr, warningRestAPIKey)
 	}
 
 	return &ParseClient{
@@ -78,23 +86,26 @@ func NewClientWithConfig(config ParseConfig) (*ParseClient, error) {
 	}
 
 	if config.TimeOut == 0 {
-		config.TimeOut = time.Millisecond * 5
+		config.TimeOut = time.Second * 5
 	}
 
 	if config.ApplicationID == "" {
 		return nil, errors.New("client requires ApplicationId")
 	}
 
-	if config.RESTAPIKey == "" {
+	if config.RESTAPIKey == "" && config.URL == defaultEndPoint {
 		return nil, errors.New("client requires RESTAPIKey")
+	} else if config.RESTAPIKey == "" {
+		fmt.Fprintf(os.Stderr, warningRestAPIKey)
 	}
 
 	return &ParseClient{
-		URL:           config.URL,
-		ApplicationID: config.ApplicationID,
-		RESTAPIKey:    config.RESTAPIKey,
-		MasterKey:     config.MasterKey,
-		TimeOut:       config.TimeOut,
+		URL:              config.URL,
+		ApplicationID:    config.ApplicationID,
+		RESTAPIKey:       config.RESTAPIKey,
+		MasterKey:        config.MasterKey,
+		TimeOut:          config.TimeOut,
+		RevocableSession: config.RevocableSession,
 	}, nil
 }
 

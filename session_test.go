@@ -3,6 +3,7 @@ package goparse
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -48,7 +49,6 @@ func TestParseSession(t *testing.T) {
 	defaultClient = nil
 
 	Convey("With a valid keys", t, func() {
-
 		client, err := getDefaultClient()
 		So(err, ShouldBeNil)
 		So(client.ApplicationID, ShouldEqual, os.Getenv("TEST_PARSE_APPLICATION_ID"))
@@ -376,7 +376,30 @@ func TestParseSession(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 		})
+		Convey("When login for revocable session", func() {
+			client, err := getDefaultClient()
+			So(err, ShouldBeNil)
+			client.RevocableSession = true
+			session := client.NewSession("")
+			user, err := session.Login("testuser", "testpass")
+			So(err, ShouldBeNil)
+			So(strings.HasPrefix(user.SessionToken, "r:"), ShouldBeTrue)
+			Convey("When logout", func() {
+				session := client.NewSession(user.SessionToken)
+				err := session.Logout()
 
+				Convey("It returns no errors", func() {
+					So(err, ShouldBeNil)
+				})
+
+				Convey("Check the user data", func() {
+					me, err := session.GetMe()
+					So(err, ShouldNotBeNil)
+					So(me, ShouldNotBeNil)
+					So(me.ObjectID, ShouldBeEmpty)
+				})
+			})
+		})
 		Convey("When deleting a user", func() {
 
 			user, err := session.Login("testuser", "testpass")
