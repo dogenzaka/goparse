@@ -376,6 +376,34 @@ func TestParseSession(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 		})
+
+		Convey("When request password reset", func() {
+			user, err := session.Login("testuser", "testpass")
+			So(err, ShouldBeNil)
+
+			_, err = session.UpdateUser(user.ObjectID, User{
+				Email: "test@this_is_a_dummy_domain.dummy",
+			})
+			So(err, ShouldBeNil)
+
+			Convey("When the email address is registered", func() {
+				err = session.RequestPasswordReset("test@this_is_a_dummy_domain.dummy")
+
+				Convey("It returns no error", func() {
+					So(err, ShouldBeNil)
+				})
+			})
+
+			Convey("When the email address is not registered", func() {
+				err = session.RequestPasswordReset("dummy@this_is_a_dummy_domain.dummy")
+
+				Convey("It returns 205 error", func() {
+					So(err, ShouldNotBeNil)
+					So(err.Error(), ShouldEqual, "no user found with email dummy@this_is_a_dummy_domain.dummy - code:205")
+				})
+			})
+		})
+
 		Convey("When login for revocable session", func() {
 			client, err := getDefaultClient()
 			So(err, ShouldBeNil)
