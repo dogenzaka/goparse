@@ -115,6 +115,13 @@ func (s *ParseSession) Logout() (err error) {
 	return do(s.post("/logout", false), nil)
 }
 
+// RequestPasswordReset let parse server to send a password reset mail
+func (s *ParseSession) RequestPasswordReset(email string) (err error) {
+	return do(s.post("/requestPasswordReset", false).Send(User{
+		Email: email,
+	}), nil)
+}
+
 // GetUser gets user information
 func (s *ParseSession) GetUser(userObjectID string) (user User, err error) {
 	return user, s.getUser(userObjectID, &user, false)
