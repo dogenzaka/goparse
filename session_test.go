@@ -309,6 +309,7 @@ func TestParseSession(t *testing.T) {
 					So(me.Phone, ShouldEqual, user.Phone)
 				})
 			})
+
 		})
 
 		Convey("When uploading installation data", func() {
@@ -428,6 +429,40 @@ func TestParseSession(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("When creating user who has revocable session", func() {
+			client, err := getDefaultClient()
+			So(err, ShouldBeNil)
+			client.RevocableSession = true
+
+			session := client.NewSession("")
+			user, err := session.Signup(Signup{
+				UserName: "revocable_user_001",
+				Password: "testpass",
+			})
+			So(err, ShouldBeNil)
+			session = client.NewSession(user.SessionToken)
+
+			Convey("When updating password", func() {
+				data := map[string]string{
+					"username": "revocable_user_001",
+					"password": "newpass",
+				}
+				resp, err := session.UpdateUser(user.ObjectID, data)
+
+				Convey("Then it returns no errors and session token is updated", func() {
+					So(err, ShouldBeNil)
+					So(resp, ShouldNotBeNil)
+					So(resp.UpdatedAt.Unix(), ShouldBeGreaterThan, 0)
+					So(resp.SessionToken, ShouldNotEqual, user.SessionToken)
+				})
+			})
+
+			Reset(func() {
+				session.DeleteUser(user.ObjectID)
+			})
+		})
+
 		Convey("When deleting a user", func() {
 
 			user, err := session.Login("testuser", "testpass")
