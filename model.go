@@ -95,9 +95,10 @@ type (
 
 	// ObjectResponse data type
 	ObjectResponse struct {
-		ObjectID  string    `json:"objectId,omitempty"`
-		CreatedAt time.Time `json:"createdAt,omitempty"`
-		UpdatedAt time.Time `json:"updatedAt,omitempty"`
+		ObjectID     string    `json:"objectId,omitempty"`
+		SessionToken string    `json:"sessionToken,omitempty"`
+		CreatedAt    time.Time `json:"createdAt,omitempty"`
+		UpdatedAt    time.Time `json:"updatedAt,omitempty"`
 	}
 
 	// Error data type
